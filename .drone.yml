@@ -131,35 +131,35 @@ steps:
       # - docker-compose -f docker-compose.yml -f docker-compose.hw.yml down -v --rmi all || true
       # - if [ $RESULT -ne 0 ]; then exit 1; fi
 
-  - name: deploy
-    image: enigmampc/docker-client
-    privileged: true
-    depends_on:
-      - integration
-    when:
-      branch:
-        - develop
-        - master
-    environment:
-      USERNAME:
-        from_secret: username
-      PASSWORD:
-        from_secret: password
-    volumes:
-      - name: sock
-        path: /var/run/docker.sock
-    commands:
-      - cd discovery-docker-network/enigma-core
-      - echo $PASSWORD | docker login -u $USERNAME --password-stdin
-      - if [[ ${DRONE_BRANCH} == "master" ]]; then export DOCKER_TAG=latest; else export DOCKER_TAG=develop; fi
-      - docker build --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_core_hw:$DOCKER_TAG --no-cache .
-      - docker push enigmampc/enigma_core_hw:$DOCKER_TAG
-      - docker build -f Dockerfile.km --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_km_hw:$DOCKER_TAG --no-cache .
-      - docker push enigmampc/enigma_km_hw:$DOCKER_TAG
-      - docker build --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=SW -t enigmampc/enigma_core_sw:$DOCKER_TAG --no-cache .
-      - docker push enigmampc/enigma_core_sw:$DOCKER_TAG
-      - docker build -f Dockerfile.km --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=SW -t enigmampc/enigma_km_sw:$DOCKER_TAG --no-cache .
-      - docker push enigmampc/enigma_km_sw:$DOCKER_TAG
+  # - name: deploy
+  #   image: enigmampc/docker-client
+  #   privileged: true
+  #   depends_on:
+  #     - integration
+  #   when:
+  #     branch:
+  #       - develop
+  #       - master
+  #   environment:
+  #     USERNAME:
+  #       from_secret: username
+  #     PASSWORD:
+  #       from_secret: password
+  #   volumes:
+  #     - name: sock
+  #       path: /var/run/docker.sock
+  #   commands:
+  #     - cd discovery-docker-network/enigma-core
+  #     - echo $PASSWORD | docker login -u $USERNAME --password-stdin
+  #     - if [[ ${DRONE_BRANCH} == "master" ]]; then export DOCKER_TAG=latest; else export DOCKER_TAG=develop; fi
+  #     - docker build --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_core_hw:$DOCKER_TAG --no-cache .
+  #     - docker push enigmampc/enigma_core_hw:$DOCKER_TAG
+  #     - docker build -f Dockerfile.km --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_km_hw:$DOCKER_TAG --no-cache .
+  #     - docker push enigmampc/enigma_km_hw:$DOCKER_TAG
+  #     - docker build --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=SW -t enigmampc/enigma_core_sw:$DOCKER_TAG --no-cache .
+  #     - docker push enigmampc/enigma_core_sw:$DOCKER_TAG
+  #     - docker build -f Dockerfile.km --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=SW -t enigmampc/enigma_km_sw:$DOCKER_TAG --no-cache .
+  #     - docker push enigmampc/enigma_km_sw:$DOCKER_TAG
 
 volumes:
   - name: isgx
