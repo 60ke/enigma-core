@@ -16,7 +16,9 @@ steps:
       - export MATCHING_BRANCH_CONTRACT="$(git ls-remote --heads https://github.com/enigmampc/enigma-contract.git ${DRONE_BRANCH} | wc -l)"
       - export DOCKER_TAG=core_${DRONE_BUILD_NUMBER}
       - sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
-      - PROJECTS=(p2p contract)
+      - /bin/bash -c "
+        declare -a PROJECTS=(p2p contract)
+        declare -A DOCKER_IMAGES=([p2p]=enigma_p2p [contract]=enigma_contract)"
       
 volumes:
   - name: isgx
