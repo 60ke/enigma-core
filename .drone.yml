@@ -107,29 +107,29 @@ steps:
         declare -A GIT_BRANCH_ARG=([p2p]=GIT_BRANCH_P2P [contract]=GIT_BRANCH_CONTRACT)
         declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
         declare -A PROJECT_DIRECTORY=([p2p]=enigma-p2p [contract]=enigma-contract)
-        for project in "$PROJECTS"; do
-          DOCKER_IMAGE="enigmampc/${DOCKER_IMAGES[$project]}"
-          if [[ "$DRONE_BRANCH" == "master" ]]; then
-            docker pull "$DOCKER_IMAGE:latest"
-            docker tag "$DOCKER_IMAGE:latest" "$DOCKER_IMAGE:$DOCKER_TAG"
-          elif [ "${{PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
-            docker pull "$DOCKER_IMAGE:develop"
-            docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
-          else
-            cd "${{PROJECT_DIRECTORY[$project]}}"
-            docker build --build-arg "${{GIT_BRANCH_ARG[$project]}}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
-            cd ..
-          fi
-        done
-      - |
-        cd enigma-core &&
-        docker build --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_core_hw:$DOCKER_TAG --no-cache . &&
-        docker build -f Dockerfile.km --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_km_hw:$DOCKER_TAG --no-cache . &&
-        cd ..
-      - export NODES=3
-      - docker-compose -f docker-compose.yml -f docker-compose.hw.yml -f docker-compose.test.yml up --scale core=$NODES --scale p2p=$NODES --exit-code-from client && export RESULT=$? || export RESULT=$?
-      - docker-compose -f docker-compose.yml -f docker-compose.hw.yml down -v --rmi all || true
-      - if [ $RESULT -ne 0 ]; then exit 1; fi
+      #   for project in "$PROJECTS"; do
+      #     DOCKER_IMAGE="enigmampc/${DOCKER_IMAGES[$project]}"
+      #     if [[ "$DRONE_BRANCH" == "master" ]]; then
+      #       docker pull "$DOCKER_IMAGE:latest"
+      #       docker tag "$DOCKER_IMAGE:latest" "$DOCKER_IMAGE:$DOCKER_TAG"
+      #     elif [ "${{PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
+      #       docker pull "$DOCKER_IMAGE:develop"
+      #       docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
+      #     else
+      #       cd "${{PROJECT_DIRECTORY[$project]}}"
+      #       docker build --build-arg "${{GIT_BRANCH_ARG[$project]}}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
+      #       cd ..
+      #     fi
+      #   done
+      # - |
+      #   cd enigma-core &&
+      #   docker build --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_core_hw:$DOCKER_TAG --no-cache . &&
+      #   docker build -f Dockerfile.km --build-arg GIT_BRANCH_CORE=$DRONE_BRANCH --build-arg SGX_MODE=HW -t enigmampc/enigma_km_hw:$DOCKER_TAG --no-cache . &&
+      #   cd ..
+      # - export NODES=3
+      # - docker-compose -f docker-compose.yml -f docker-compose.hw.yml -f docker-compose.test.yml up --scale core=$NODES --scale p2p=$NODES --exit-code-from client && export RESULT=$? || export RESULT=$?
+      # - docker-compose -f docker-compose.yml -f docker-compose.hw.yml down -v --rmi all || true
+      # - if [ $RESULT -ne 0 ]; then exit 1; fi
 
   - name: deploy
     image: enigmampc/docker-client
