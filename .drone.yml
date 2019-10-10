@@ -26,14 +26,16 @@ steps:
         declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
         for project in $${PROJECTS[@]}; do
           DOCKER_IMAGE="enigmampc/$${DOCKER_IMAGES[$project]}"
-          echo $DOCKER_IMAGE
-          echo $${PROJECT_BRANCH_FOUND[$project]}
           if [[ "$DRONE_BRANCH" == "master" ]]; then
-            echo "one"
+            docker pull "$DOCKER_IMAGE:latest"
+            docker tag "$DOCKER_IMAGE:latest" "$DOCKER_IMAGE:$DOCKER_TAG"
           elif [ "$${PROJECT_BRANCH_FOUND[$project]}" -eq 0 ]; then
-            echo "two"
+            docker pull "$DOCKER_IMAGE:develop"
+            docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
           else
-            echo "three"
+            cd "$${PROJECT_DIRECTORY[$project]}"
+            docker build --build-arg "$${GIT_BRANCH_ARG[$project]}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
+            cd ..
           fi
         done'
 
