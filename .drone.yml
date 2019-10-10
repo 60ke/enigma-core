@@ -35,7 +35,7 @@ steps:
             docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
           else
             cd "$${PROJECT_DIRECTORY[$project]}"
-            docker build --build-arg "${{GIT_BRANCH_ARG[$project]}}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
+            docker build --build-arg "$${GIT_BRANCH_ARG[$project]}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
             cd ..
           fi
         done'
