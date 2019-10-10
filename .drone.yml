@@ -105,7 +105,7 @@ steps:
         declare -a PROJECTS=(p2p contract)
         declare -A DOCKER_IMAGES=([p2p]=enigma_p2p [contract]=enigma_contract)
         declare -A GIT_BRANCH_ARG=([p2p]=GIT_BRANCH_P2P [contract]=GIT_BRANCH_CONTRACT)
-        declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
+      #  declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
         declare -A PROJECT_DIRECTORY=([p2p]=enigma-p2p [contract]=enigma-contract)
       #   for project in "$PROJECTS"; do
       #     DOCKER_IMAGE="enigmampc/${DOCKER_IMAGES[$project]}"
