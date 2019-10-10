@@ -18,8 +18,8 @@ steps:
       - sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
       - /bin/bash --version
       - /bin/bash -c "
-        declare -a PROJECTS=(p2p contract)
-        declare -A DOCKER_IMAGES=([p2p]=enigma_p2p [contract]=enigma_contract)"
+        declare -a PROJECTS=(p2p contract);
+        declare -A DOCKER_IMAGES=([p2p]=enigma_p2p [contract]=enigma_contract);"
       
 volumes:
   - name: isgx
