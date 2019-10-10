@@ -93,7 +93,7 @@ steps:
       - name: sock
         path: /var/run/docker.sock
     commands:
-      - set -e
+      # - set -e
       - git clone https://github.com/enigmampc/discovery-docker-network.git
       - cd discovery-docker-network && cp .env-template .env
       - sed -i "s/COMPOSE_PROJECT_NAME=.*/COMPOSE_PROJECT_NAME=enigma_${DRONE_BUILD_NUMBER}/" .env
