@@ -22,20 +22,6 @@ steps:
         declare -A GIT_BRANCH_ARG=([p2p]=GIT_BRANCH_P2P [contract]=GIT_BRANCH_CONTRACT)
         declare -A PROJECT_DIRECTORY=([p2p]=enigma-p2p [contract]=enigma-contract)
         declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
-        for project in "$PROJECTS"; do
-          DOCKER_IMAGE="enigmampc/${DOCKER_IMAGES[$project]}"
-          if [[ "$DRONE_BRANCH" == "master" ]]; then
-            docker pull "$DOCKER_IMAGE:latest"
-            docker tag "$DOCKER_IMAGE:latest" "$DOCKER_IMAGE:$DOCKER_TAG"
-          elif [ "${{PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
-            docker pull "$DOCKER_IMAGE:develop"
-            docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
-          else
-            cd "${{PROJECT_DIRECTORY[$project]}}"
-            docker build --build-arg "${{GIT_BRANCH_ARG[$project]}}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
-            cd ..
-          fi
-        done
 
 volumes:
   - name: isgx
