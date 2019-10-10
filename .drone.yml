@@ -29,15 +29,11 @@ steps:
           echo $DOCKER_IMAGE
           echo $${PROJECT_BRANCH_FOUND[$project]}}
           if [[ "$DRONE_BRANCH" == "master" ]]; then
-            echo "docker pull $DOCKER_IMAGE:latest"
-            echo "docker tag $DOCKER_IMAGE:latest $DOCKER_IMAGE:$DOCKER_TAG"
+            echo "one"
           elif [ "$${PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
-            echo "docker pull $DOCKER_IMAGE:develop"
-            echo "docker tag $DOCKER_IMAGE:develop $DOCKER_IMAGE:$DOCKER_TAG"
+            echo "two"
           else
-            echo "cd $${PROJECT_DIRECTORY[$project]}"
-            echo "docker build --build-arg $${GIT_BRANCH_ARG[$project]}=${DRONE_BRANCH} -t $DOCKER_IMAGE:$DOCKER_TAG --no-cache .""
-            echo "cd .."
+            echo "three"
           fi
         done'
 
