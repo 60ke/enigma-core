@@ -24,7 +24,7 @@ steps:
         declare -A GIT_BRANCH_ARG=([p2p]=GIT_BRANCH_P2P [contract]=GIT_BRANCH_CONTRACT)
         declare -A PROJECT_DIRECTORY=([p2p]=enigma-p2p [contract]=enigma-contract)
         declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
-        for project in ${PROJECTS[@]}; do
+        for project in $${PROJECTS[@]}; do
           echo $project
         done'
 
