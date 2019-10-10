@@ -112,12 +112,12 @@ steps:
           if [[ "$DRONE_BRANCH" == "master" ]]; then
             docker pull "$DOCKER_IMAGE:latest"
             docker tag "$DOCKER_IMAGE:latest" "$DOCKER_IMAGE:$DOCKER_TAG"
-          elif [ "${PROJECT_BRANCH_FOUND[$project]}" -eq 0 ]; then
+          elif [ "${{PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
             docker pull "$DOCKER_IMAGE:develop"
             docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
           else
-            cd "${PROJECT_DIRECTORY[$project]}"
-            docker build --build-arg "${GIT_BRANCH_ARG[$project]}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
+            cd "${{PROJECT_DIRECTORY[$project]}}"
+            docker build --build-arg "${{GIT_BRANCH_ARG[$project]}}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
             cd ..
           fi
         done
