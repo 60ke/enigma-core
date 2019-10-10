@@ -25,7 +25,8 @@ steps:
         declare -A PROJECT_DIRECTORY=([p2p]=enigma-p2p [contract]=enigma-contract)
         declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
         for project in $${PROJECTS[@]}; do
-          echo $project
+          DOCKER_IMAGE="enigmampc/$${DOCKER_IMAGES[$$project]}"
+          echo $DOCKER_IMAGE
         done'
 
       
