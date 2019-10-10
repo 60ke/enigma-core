@@ -11,7 +11,31 @@ steps:
     commands:
       - git clone https://github.com/enigmampc/discovery-docker-network.git
       - cd discovery-docker-network && cp .env-template .env
-
+      - sed -i "s/COMPOSE_PROJECT_NAME=.*/COMPOSE_PROJECT_NAME=enigma_${DRONE_BUILD_NUMBER}/" .env
+      - export MATCHING_BRANCH_P2P="$(git ls-remote --heads https://github.com/enigmampc/enigma-p2p.git ${DRONE_BRANCH} | wc -l)"
+      - export MATCHING_BRANCH_CONTRACT="$(git ls-remote --heads https://github.com/enigmampc/enigma-contract.git ${DRONE_BRANCH} | wc -l)"
+      - export DOCKER_TAG=core_${DRONE_BUILD_NUMBER}
+      - sed -i "s/DOCKER_TAG=latest/DOCKER_TAG=${DOCKER_TAG}/" .env;
+      - |
+        declare -a PROJECTS=(p2p contract)
+        declare -A DOCKER_IMAGES=([p2p]=enigma_p2p [contract]=enigma_contract)
+        declare -A GIT_BRANCH_ARG=([p2p]=GIT_BRANCH_P2P [contract]=GIT_BRANCH_CONTRACT)
+        declare -A PROJECT_DIRECTORY=([p2p]=enigma-p2p [contract]=enigma-contract)
+       declare -A PROJECT_BRANCH_FOUND=([p2p]=$MATCHING_BRANCH_P2P [contract]=$MATCHING_BRANCH_CONTRACT)
+        for project in "$PROJECTS"; do
+          DOCKER_IMAGE="enigmampc/${DOCKER_IMAGES[$project]}"
+          if [[ "$DRONE_BRANCH" == "master" ]]; then
+            docker pull "$DOCKER_IMAGE:latest"
+            docker tag "$DOCKER_IMAGE:latest" "$DOCKER_IMAGE:$DOCKER_TAG"
+          elif [ "${{PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
+            docker pull "$DOCKER_IMAGE:develop"
+            docker tag "$DOCKER_IMAGE:develop" "$DOCKER_IMAGE:$DOCKER_TAG"
+          else
+            cd "${{PROJECT_DIRECTORY[$project]}}"
+            docker build --build-arg "${{GIT_BRANCH_ARG[$project]}}=${DRONE_BRANCH}" -t "$DOCKER_IMAGE:$DOCKER_TAG" --no-cache .
+            cd ..
+          fi
+        done
 
 volumes:
   - name: isgx
