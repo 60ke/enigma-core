@@ -27,10 +27,10 @@ steps:
         for project in $${PROJECTS[@]}; do
           DOCKER_IMAGE="enigmampc/$${DOCKER_IMAGES[$project]}"
           echo $DOCKER_IMAGE
-          echo $${PROJECT_BRANCH_FOUND[$project]}}
+          echo $${PROJECT_BRANCH_FOUND[$project]}
           if [[ "$DRONE_BRANCH" == "master" ]]; then
             echo "one"
-          elif [ "$${PROJECT_BRANCH_FOUND[$project]}}" -eq 0 ]; then
+          elif [ "$${PROJECT_BRANCH_FOUND[$project]}" -eq 0 ]; then
             echo "two"
           else
             echo "three"
