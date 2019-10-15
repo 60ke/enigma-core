@@ -40,13 +40,27 @@ fn convert_undecrypted_value_to_string(rlp: &UntrustedRlp, arg_type: &SolidityTy
                 Err(_e) => return Err(FailedTaskError(InputError { message: rlp_error })),
             }
         }
+        // SolidityType::Uint => {
+        //     let num_result: Result<u64, DecoderError> = rlp.as_val();
+        //     result = match num_result {
+        //         Ok(v) => v.to_string(),
+        //         Err(_e) => return Err(FailedTaskError(InputError { message: rlp_error })),
+        //     }
+        // }
         SolidityType::Uint => {
             let num_result: Result<u64, DecoderError> = rlp.as_val();
             result = match num_result {
-                Ok(v) => v.to_string(),
+                Ok(v) => {
+                    if v.to_string().len() < 64{
+                        let v ="0".repeat(64-v.to_string().len()) + &v.to_string();
+                        v
+                    }else{
+                        v.to_string()
+                    }
+                },
                 Err(_e) => return Err(FailedTaskError(InputError { message: rlp_error })),
             }
-        }
+        }        
         SolidityType::Bool => {
             let num_result: Result<bool, DecoderError> = rlp.as_val();
             result = match num_result {
